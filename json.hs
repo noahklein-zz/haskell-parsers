@@ -3,6 +3,7 @@ import Control.Applicative
 import Control.Monad
 
 data JSONValue = B Bool
+               | S String
                deriving (Show)
 
 ws :: Parser String
@@ -22,5 +23,11 @@ bool = boolTrue <|> boolFalse
 jsonBool :: Parser JSONValue
 jsonBool = lexeme $ B <$> bool
 
+stringLiteral :: Parser String
+stringLiteral = char '"' *> (many (noneOf ['"'])) <* char '"'
+
+jsonStringLiteral :: Parser JSONValue
+jsonStringLiteral = lexeme $ S <$> stringLiteral
+
 jsonValue :: Parser JSONValue
-jsonValue = jsonBool
+jsonValue = jsonBool <|> jsonStringLiteral
