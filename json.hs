@@ -4,11 +4,16 @@ import Control.Monad
 
 data JSONValue = B Bool
                | S String
+               | F Float
                deriving (Show)
+
+a <:> b = (:) <$> a <*> b
+a <++> b = (++) <$> a <*> b
 
 ws :: Parser String
 ws = many (oneOf " \t\n")
 
+lexeme :: Parser a -> Parser a
 lexeme p = p <* ws
 
 boolTrue :: Parser Bool
@@ -29,5 +34,23 @@ stringLiteral = char '"' *> (many (noneOf ['"'])) <* char '"'
 jsonStringLiteral :: Parser JSONValue
 jsonStringLiteral = lexeme $ S <$> stringLiteral
 
+number :: Parser String
+number = many1 digit
+
+int :: Parser String
+int = positive <|> negative <|> number
+    where
+      positive = char '+' *> number
+      negative = char '-' <:> number
+
+float :: Parser Float
+float = fmap rd (int <++> decimal)
+    where
+        rd      = read :: String -> Float
+        decimal = option "" $ char '.' <:> number
+
+jsonFloat :: Parser JSONValue
+jsonFloat = F <$> float
+
 jsonValue :: Parser JSONValue
-jsonValue = jsonBool <|> jsonStringLiteral
+jsonValue = jsonBool <|> jsonStringLiteral <|> jsonFloat
