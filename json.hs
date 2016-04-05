@@ -5,6 +5,7 @@ import Control.Monad
 data JSONValue = B Bool
                | S String
                | F Float
+               | N String
                deriving (Show)
 
 a <:> b = (:) <$> a <*> b
@@ -52,5 +53,11 @@ float = fmap rd (int <++> decimal)
 jsonFloat :: Parser JSONValue
 jsonFloat = F <$> float
 
+nullLiteral :: Parser String
+nullLiteral = (string "null") *> (pure "null")
+
+jsonNullLiteral :: Parser JSONValue
+jsonNullLiteral = lexeme $ N <$> nullLiteral
+
 jsonValue :: Parser JSONValue
-jsonValue = jsonBool <|> jsonStringLiteral <|> jsonFloat
+jsonValue = jsonBool <|> jsonStringLiteral <|> jsonFloat <|> jsonNullLiteral
