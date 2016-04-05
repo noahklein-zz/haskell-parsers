@@ -1,3 +1,5 @@
+module Json (jsonValue) where
+
 import Text.ParserCombinators.Parsec hiding ((<|>), many)
 import Control.Applicative
 import Control.Monad

@@ -1,0 +1,11 @@
+{
+  "name": "test subject",
+  "age": 31,
+  "placeOfOrigin": {
+    "city": "New York",
+    "state": "NY"
+  },
+  "hobbies": ["knitting", "dancing", "adventuring"],
+  "isPresident": false,
+  "mission": null
+}
