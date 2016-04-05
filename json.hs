@@ -53,7 +53,7 @@ float = fmap rd (int <++> decimal)
         decimal = option "" $ char '.' <:> number
 
 jsonFloat :: Parser JSONValue
-jsonFloat = F <$> float
+jsonFloat = lexeme $ F <$> float
 
 nullLiteral :: Parser String
 nullLiteral = (string "null") *> (pure "null")
