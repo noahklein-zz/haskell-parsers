@@ -45,8 +45,8 @@ number = many1 digit
 int :: Parser String
 int = positive <|> negative <|> number
     where
-      positive = char '+' *> number
-      negative = char '-' <:> number
+        positive = char '+' *> number
+        negative = char '-' <:> number
 
 float :: Parser Float
 float = fmap rd (int <++> decimal)
@@ -68,10 +68,10 @@ comma = char ','
 
 array :: Parser [JSONValue]
 array = do
-  lexeme $ char '['
-  list <- (lexeme jsonValue) `sepBy` (lexeme comma)
-  lexeme $ char ']'
-  return list
+    lexeme $ char '['
+    list <- jsonValue `sepBy` (lexeme comma)
+    lexeme $ char ']'
+    return list
 
 jsonArray :: Parser JSONValue
 jsonArray = A <$> array
@@ -85,10 +85,10 @@ objectEntry = do
 
 object :: Parser [(String, JSONValue)]
 object = do
-  lexeme $ char '{'
-  list <- objectEntry `sepBy` (lexeme comma)
-  lexeme $ char '}'
-  return list
+    lexeme $ char '{'
+    list <- objectEntry `sepBy` (lexeme comma)
+    lexeme $ char '}'
+    return list
 
 jsonObject :: Parser JSONValue
 jsonObject = O <$> object
