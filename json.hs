@@ -6,6 +6,8 @@ data JSONValue = B Bool
                | S String
                | F Float
                | N String
+               | A [JSONValue]
+               | O [(String, JSONValue)]
                deriving (Show)
 
 a <:> b = (:) <$> a <*> b
@@ -59,5 +61,35 @@ nullLiteral = (string "null") *> (pure "null")
 jsonNullLiteral :: Parser JSONValue
 jsonNullLiteral = lexeme $ N <$> nullLiteral
 
+comma :: Parser Char
+comma = char ','
+
+array :: Parser [JSONValue]
+array = do
+  lexeme $ char '['
+  list <- (lexeme jsonValue) `sepBy` (lexeme comma)
+  lexeme $ char ']'
+  return list
+
+jsonArray :: Parser JSONValue
+jsonArray = A <$> array
+
+objectEntry :: Parser (String, JSONValue)
+objectEntry = do
+    key <- stringLiteral
+    lexeme $ char ':'
+    value <- jsonValue
+    return (key, value)
+
+object :: Parser [(String, JSONValue)]
+object = do
+  lexeme $ char '{'
+  list <- objectEntry `sepBy` (lexeme comma)
+  lexeme $ char '}'
+  return list
+
+jsonObject :: Parser JSONValue
+jsonObject = O <$> object
+
 jsonValue :: Parser JSONValue
-jsonValue = jsonBool <|> jsonStringLiteral <|> jsonFloat <|> jsonNullLiteral
+jsonValue = jsonBool <|> jsonStringLiteral <|> jsonFloat <|> jsonNullLiteral <|> jsonArray <|> jsonObject
