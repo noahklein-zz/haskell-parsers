@@ -1,7 +1,3 @@
-# json-parser
+# haskell-parsers
 
-JSON Parser written in Haskell
-
-## Testing
-
-`$ runhaskell test.hs`
+Parsers written in Haskell
