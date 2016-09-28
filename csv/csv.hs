@@ -7,7 +7,7 @@ comma = char ','
 nl = char '\n'
 
 cell :: Parser Cell
-cell = many (noneOf [',', '\n'])
+cell = many (noneOf ",\n"])
 
 row :: Parser [Cell]
 row = cell `sepBy` comma
